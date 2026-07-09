@@ -1,74 +1,29 @@
-<div align="center">
+# IntenseRPG
 
-```
- ___       _                       ____  ____   ____ 
-|_ _|_ __ | |_ ___ _ __  ___  ___|  _ \|  _ \ / ___|
- | || '_ \| __/ _ \ '_ \/ __|/ _ \ |_) | |_) | |  _ 
- | || | | | ||  __/ | | \__ \  __/  _ <|  __/| |_| |
-|___|_| |_|\__\___|_| |_|___/\___|_| \_\_|    \____|
-```
+A small Sui Move experiment: on-chain RPG items as owned objects. I wrote this while learning Move and the Sui object model.
 
-### On-Chain RPG Game Backend
+## What it contains
 
-[![Sui](https://img.shields.io/badge/Sui-4DA2FF?style=flat-square&logo=sui&logoColor=white)](https://sui.io/)
-[![Move](https://img.shields.io/badge/Move_Lang-purple?style=flat-square)]()
+One module, `intense_rpg::rpg` in [sources/rpg.move](sources/rpg.move):
 
-</div>
+- Three item types defined as Sui objects with `key` and `store`: `Sword` (magic, strength), `Shield` (defense, strength) and `Armor` (defense)
+- An `init` function that mints a starter Shield and transfers it to the publisher
+- Getter functions for reading item stats, including one that reads a Shield and an Armor together
 
----
+The interesting part, coming from a typical backend background, is Sui's ownership model: every item is a distinct object with its own ID that lives in a wallet, not a row in some contract's storage.
 
-Smart contract backend for **IntenseRPG** — an on-chain RPG game built on the Sui blockchain using the Move programming language.
+## Building
 
-## Architecture
-
-```
-┌─────────────────────────────────┐
-│         Game Client             │
-└───────────────┬─────────────────┘
-                │
-                ▼
-┌─────────────────────────────────┐
-│        Sui Blockchain           │
-│                                 │
-│  ┌───────────┐  ┌───────────┐  │
-│  │  Player   │  │  Battle   │  │
-│  │  Module   │  │  Module   │  │
-│  ├───────────┤  ├───────────┤  │
-│  │ Inventory │  │ Combat    │  │
-│  │ Stats     │  │ Rewards   │  │
-│  │ Progress  │  │ Loot      │  │
-│  └───────────┘  └───────────┘  │
-│                                 │
-│  ┌───────────┐  ┌───────────┐  │
-│  │  Item     │  │  World    │  │
-│  │  Module   │  │  Module   │  │
-│  ├───────────┤  ├───────────┤  │
-│  │ Weapons   │  │ Zones     │  │
-│  │ Armor     │  │ Quests    │  │
-│  │ Crafting  │  │ NPCs      │  │
-│  └───────────┘  └───────────┘  │
-└─────────────────────────────────┘
-```
-
-## Tech Stack
-
-| Component | Technology |
-|-----------|-----------|
-| **Language** | Move |
-| **Blockchain** | Sui Network |
-| **Testing** | Sui Move Test Framework |
-
-## Getting Started
+With the [Sui CLI](https://docs.sui.io/guides/developer/getting-started/sui-install) installed:
 
 ```bash
-# Clone
-git clone https://github.com/kaankuzu1/IntenseRPG11.git
-cd IntenseRPG11
-
-# Run tests
-sui move test
+sui move build
 ```
 
-## License
+## Publishing
 
-MIT
+```bash
+sui client publish
+```
+
+On publish, `init` runs once and the deployer receives the starter Shield object.
